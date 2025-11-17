@@ -12,12 +12,16 @@ else
 endif
 INSTALL_TARGET_PROCESSES = YouTube
 
+# Makefile for YouQuality (GitHub Actions対応版)
+
+THEOS := $(shell echo $$THEOS)
+
 include $(THEOS)/makefiles/common.mk
+include $(THEOS)/makefiles/tweak.mk
 
 TWEAK_NAME = YouQuality
-
-$(TWEAK_NAME)_FILES = Tweak.x
-$(TWEAK_NAME)_CFLAGS = -fobjc-arc
+YouQuality_FILES = Tweak.x
+YouQuality_FRAMEWORKS = UIKit
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 
