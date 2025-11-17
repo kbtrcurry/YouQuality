@@ -17,10 +17,11 @@ jobs:
       - name: Setup Theos
         run: |
           git clone --depth=1 https://github.com/theos/theos.git $HOME/theos
-          echo "export THEOS=$HOME/theos" >> $GITHUB_ENV
-          echo "export PATH=$HOME/theos/bin:$PATH" >> $GITHUB_ENV
 
       - name: Build dylib
+        env:
+          THEOS: ${{ runner.home }}/theos
+          PATH: ${{ runner.home }}/theos/bin:${{ env.PATH }}
         run: |
           make clean
           make
