@@ -1,4 +1,5 @@
-name: Build YouQuality dylib
+# .github/workflows/build-deb.yml
+name: Build YouQuality (.deb)
 
 on:
   push:
@@ -7,27 +8,30 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-deb:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout source
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Theos
+      - name: Install Theos
         run: |
           git clone --depth=1 https://github.com/theos/theos.git $HOME/theos
+          echo "export THEOS=$HOME/theos" >> $GITHUB_ENV
+          echo "export PATH=$THEOS/bin:$PATH" >> $GITHUB_ENV
 
-      - name: Build dylib
-        env:
-          THEOS: ${{ runner.home }}/theos
-          PATH: ${{ runner.home }}/theos/bin:${{ env.PATH }}
+      - name: Install dependencies
+        run: |
+          brew install dpkg ldid
+
+      - name: Build tweak and package
         run: |
           make clean
-          make
+          make package
 
-      - name: Upload .dylib
+      - name: Upload .deb
         uses: actions/upload-artifact@v4
         with:
-          name: YouQuality-dylib
-          path: .theos/obj/debug/*.dylib
+          name: YouQuality-deb
+          path: packages/*.deb
