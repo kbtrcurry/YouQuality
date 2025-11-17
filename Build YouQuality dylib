@@ -1,0 +1,32 @@
+name: Build YouQuality dylib
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Theos
+        run: |
+          git clone --depth=1 https://github.com/theos/theos.git $HOME/theos
+          echo "export THEOS=$HOME/theos" >> $GITHUB_ENV
+          echo "export PATH=$HOME/theos/bin:$PATH" >> $GITHUB_ENV
+
+      - name: Build dylib
+        run: |
+          make clean
+          make
+
+      - name: Upload .dylib
+        uses: actions/upload-artifact@v3
+        with:
+          name: YouQuality-dylib
+          path: .theos/obj/debug/*.dylib
